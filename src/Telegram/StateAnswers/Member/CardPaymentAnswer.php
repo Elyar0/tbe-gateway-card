@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\Models\Invoice;
+use TelegramBotEssentials\Billing\Telegram\Features\Member\InvoiceFeature;
 use TelegramBotEssentials\Essence\Enums\AllowableFields;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -59,9 +60,14 @@ class CardPaymentAnswer extends StateAnswer
             'invoiceId' => $invoice->id,
             'userPeerId' => $invoice->botUser->telegramUser->peer_id,
             'userFullName' => $invoice->botUser->telegramUser->full_name,
+            'invoiceAmount' => currency()->priceFormat($invoice->price),
             'invoiceDescription' => $invoice->payable->description ?? null,
             'paymentDescription' => wHook()->update()->message?->photo ? wHook()->update()->message->caption : wHook()->update()->message->text,
         ]);
+
+        if ($offerSummary = InvoiceFeature::offerSummary($invoice)) {
+            $text .= "\r\n\r\n".$offerSummary;
+        }
 
         $replyMarkup = Keyboard::make()->inline();
 
