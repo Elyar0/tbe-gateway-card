@@ -5,6 +5,7 @@ namespace TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Member;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Billing\Models\Invoice;
+use TelegramBotEssentials\Billing\Telegram\Features\Member\InvoiceFeature;
 use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\FeatureIsDisabled;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
@@ -48,6 +49,10 @@ class CardPaymentQuery extends CallbackQuery
             'cardNumber' => settings()->get('billing.gateways.card.card_number'),
             'cardName' => settings()->get('billing.gateways.card.card_name'),
         ]);
+
+        if ($offerSummary = InvoiceFeature::offerSummary($invoice)) {
+            $text .= "\r\n\r\n".$offerSummary;
+        }
 
         wHook()->user()->changeState(
             encodeAnswerState(
