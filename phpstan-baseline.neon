@@ -79,7 +79,7 @@ parameters:
 			path: src/Telegram/CallbackQueries/Admin/ManageCardPaymentQuery.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{adminName\: mixed\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/CallbackQueries/Admin/ManageCardPaymentQuery.php
@@ -115,13 +115,13 @@ parameters:
 			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{cardNumber\: mixed, cardName\: mixed\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\>\|TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$messageMeta\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\>\|TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$messageMeta\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Telegram/StateAnswers/Admin/ManageCardPaymentAnswer.php
@@ -205,13 +205,19 @@ parameters:
 			path: src/Telegram/StateAnswers/Admin/ManageCardPaymentAnswer.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{adminName\: mixed\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/StateAnswers/Admin/ManageCardPaymentAnswer.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, TelegramBotEssentials\\Billing\\Models\\Invoice\>\|TelegramBotEssentials\\Billing\\Models\\Invoice\:\:\$messageMeta\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), TelegramBotEssentials\\Billing\\Models\\Invoice\>\|TelegramBotEssentials\\Billing\\Models\\Invoice\:\:\$messageMeta\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Billing\\Models\\Invoice\:\:\$price\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
@@ -325,13 +331,19 @@ parameters:
 			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
 
 		-
+			message: '#^Parameter \#1 \$amount of method TelegramBotEssentials\\Billing\\Services\\Currency\:\:priceFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
+
+		-
 			message: '#^Parameter \#1 \$name of static method Illuminate\\Filesystem\\FilesystemManager\:\:disk\(\) expects string\|UnitEnum\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, .+\>, array.+ given\.$#'
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{invoiceId\: int, userPeerId\: mixed, userFullName\: mixed, invoiceAmount\: string, invoiceDescription\: mixed, paymentDescription\: string\|null\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
