@@ -7,6 +7,7 @@ return [
                 ."\r\n🏷 New to card Payment"
                 ."\r\n"
                 ."\r\n👤 User: <a href=\"tg://user?id=:userPeerId\">:userFullName</a>"
+                ."\r\n💲 Amount: :invoiceAmount"
                 ."\r\n"
                 ."\r\n📝 Order Description: \r\n:invoiceDescription"
                 ."\r\n"
