@@ -7,6 +7,7 @@ return [
                 ."\r\n🏷 پرداخت جدید به کارت"
                 ."\r\n"
                 ."\r\n👤 کاربر: <a href=\"tg://user?id=:userPeerId\">:userFullName</a>"
+                ."\r\n💲 مبلغ: :invoiceAmount"
                 ."\r\n"
                 ."\r\n📝 توضیحات سفارش: \r\n:invoiceDescription"
                 ."\r\n"
