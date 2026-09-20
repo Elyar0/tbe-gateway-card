@@ -4,6 +4,9 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write
+
 jobs:
   size:
     uses: Telegram-Bot-Essentials/.github/.github/workflows/pr-size.yml@main
