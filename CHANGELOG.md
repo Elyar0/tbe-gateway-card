@@ -6,6 +6,15 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-09-20
+
+### Added
+
+- The manual card payment flow now shows the invoice amount and any offer
+  code's effect: on the "pay to this card" message the member sees, and on
+  the accept/reject message posted to the admin transactions chat (which
+  previously carried no price at all).
+
 ## [0.1.4] - 2026-09-01
 
 ### Changed
