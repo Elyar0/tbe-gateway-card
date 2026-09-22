@@ -6,7 +6,7 @@
         "php": "^8.3",
         "laravel/framework": "^12 || ^13",
         "telegram-bot-essentials/billing": "~0.0.32",
-        "telegram-bot-essentials/essence": "^0.13",
+        "telegram-bot-essentials/essence": "^0.13 || ^0.14",
         "telegram-bot-essentials/settings": "~0.0.17"
     },
     "license": "MIT",
