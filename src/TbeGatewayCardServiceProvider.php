@@ -3,11 +3,13 @@
 namespace TelegramBotEssentials\GatewayCard;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\DTOs\Gateway;
 use TelegramBotEssentials\Billing\Models\Invoice;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\GatewayCard\Services\SmsParsers\BankSmsParserFactory;
 use TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Admin\ManageCardPaymentQuery;
 use TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Member\CardPaymentQuery;
 use TelegramBotEssentials\GatewayCard\Telegram\Features\Member\CardPaymentFeature;
@@ -33,6 +35,11 @@ class TbeGatewayCardServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'tbe-gateway-card');
+
+        if (config('tbe-gateway-card.routes.enabled', true)) {
+            Route::prefix(config('tbe-gateway-card.routes.api_prefix', 'api'))
+                ->group(__DIR__.'/../routes/api.php');
+        }
 
         callbackQueryBus()->addCallbackQueries([
             ManageCardPaymentQuery::class,
@@ -111,6 +118,35 @@ class TbeGatewayCardServiceProvider extends ServiceProvider
             label: fn () => __('tbe-gateway-card::settings.labels.transactions_chat_id'),
             type: SettingType::TEXT,
             description: fn () => __('tbe-gateway-card::settings.descriptions.transactions_chat_id'),
+        ));
+
+        settings()->addSetting(new Setting(
+            key: 'billing.gateways.card.sms_bank',
+            label: fn () => __('tbe-gateway-card::settings.labels.sms_bank'),
+            type: SettingType::SELECT,
+            options: fn () => BankSmsParserFactory::options(),
+            description: fn () => __('tbe-gateway-card::settings.descriptions.sms_bank'),
+        ));
+
+        settings()->addSetting(new Setting(
+            key: 'billing.gateways.card.sms_secret',
+            label: fn () => __('tbe-gateway-card::settings.labels.sms_secret'),
+            type: SettingType::SENSITIVE,
+            description: fn () => __('tbe-gateway-card::settings.descriptions.sms_secret', [
+                // Point the admin at the exact URL to configure in the
+                // forwarder app - the route is per-bot, so this can only be
+                // resolved live, from whichever bot is browsing its own
+                // settings right now.
+                'url' => route('gateway-card.sms', ['bot' => wHook()->bot()->unique_id]),
+            ]),
+        ));
+
+        settings()->addSetting(new Setting(
+            key: 'billing.gateways.card.unique_amount',
+            label: fn () => __('tbe-gateway-card::settings.labels.unique_amount'),
+            type: SettingType::CHECKBOX,
+            default: false,
+            description: fn () => __('tbe-gateway-card::settings.descriptions.unique_amount'),
         ));
     }
 
