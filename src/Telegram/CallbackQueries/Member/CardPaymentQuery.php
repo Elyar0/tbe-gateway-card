@@ -2,6 +2,7 @@
 
 namespace TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Member;
 
+use Brick\Math\BigDecimal;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use TelegramBotEssentials\Billing\Models\Invoice;
@@ -32,9 +33,14 @@ class CardPaymentQuery extends CallbackQuery
         dependsOn(settings()->get('billing.gateways.card.card_name'));
         dependsOn(settings()->get('billing.gateways.card.transactions_chat_id'));
 
+        $price = $invoice->price;
+        $amount = settings()->get('billing.gateways.card.unique_amount')
+            ? (string) BigDecimal::of($price)->plus(random_int(1, 99))
+            : $price;
+
         $toCardAttempt = ToCardAttempt::create([
             'card_number' => settings()->get('billing.gateways.card.card_number'),
-            'amount' => $invoice->price,
+            'amount' => $amount,
         ]);
 
         billing()->attemptPayment($invoice, $toCardAttempt);
@@ -46,6 +52,7 @@ class CardPaymentQuery extends CallbackQuery
         ]);
 
         $text = __('tbe-gateway-card::invoice.to_card.text.user-pay_message', [
+            'amount' => currency()->priceFormat($amount),
             'cardNumber' => settings()->get('billing.gateways.card.card_number'),
             'cardName' => settings()->get('billing.gateways.card.card_name'),
         ]);
