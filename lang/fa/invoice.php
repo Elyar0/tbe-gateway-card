@@ -19,10 +19,12 @@ return [
             'user-payment_result' => '✅ پرداخت با موفقیت ثبت شد، منتظر پردازش بمانید',
             'user-pay_message' => 'مبلغ را به کارت زیر واریز کرده و نتیجه را ارسال کنید:'
                 ."\r\n"
+                ."\r\n💲 مبلغ: <code>:amount</code>"
                 ."\r\n🔸 <code>:cardNumber</code>"
                 ."\r\n :cardName",
             'user-payment_rejected' => '❌ پرداخت شما به دلیل زیر رد شد:'
                 ."\r\n:rejectionReason",
+            'admin-sms_unmatched' => '⚠️ یک پیامک بانکی به مبلغ :amount دریافت شد، اما با :candidateCount پرداخت کارتی در انتظار مطابقت داشت (نه دقیقاً یکی). برای بررسی دستی باقی ماند.',
         ],
         'answers' => [
             'admin-rejecting_payment' => 'در حال آماده‌سازی برای رد پرداخت',
@@ -42,6 +44,7 @@ return [
             'user-payment_rejected' => 'پرداخت رد شد',
             'user-waiting_for_payment' => 'در انتظار پرداخت کاربر',
             'user-wait_for_payment_processing' => 'در انتظار پردازش پرداخت',
+            'auto_verified_by_sms' => 'تایید خودکار با پیامک',
         ],
         'labels' => [
             'gateway' => 'کارت',
