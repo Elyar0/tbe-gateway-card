@@ -22,3 +22,12 @@ it('exposes a card payment gateway to billing', function () {
 
     expect($keys)->toContain('card');
 });
+
+it('shows the admin the exact webhook URL for their own bot in the SMS secret setting', function () {
+    $bot = $this->makeBot();
+    wHook()->setBot($bot);
+
+    $description = app(Settings::class)->getSetting('billing.gateways.card.sms_secret')->getDescription();
+
+    expect($description)->toContain("/api/{$bot->unique_id}/gateway-card/sms");
+});
