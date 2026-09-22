@@ -19,10 +19,12 @@ return [
             'user-payment_result' => 'Payment submitted successfully, wait for processing',
             'user-pay_message' => 'Pay the amount to this card then send the result here for processing'
                 ."\r\n"
+                ."\r\n💲 Amount: <code>:amount</code>"
                 ."\r\n🔸 <code>:cardNumber</code>"
                 ."\r\n :cardName",
             'user-payment_rejected' => '❌ Your payment rejected due to reason below:'
                 ."\r\n:rejectionReason",
+            'admin-sms_unmatched' => '⚠️ Received a bank SMS for :amount, but it matched :candidateCount pending card payment(s) instead of exactly one. Left for manual review.',
         ],
         'answers' => [
             'admin-rejecting_payment' => 'initializing for rejection',
@@ -42,6 +44,7 @@ return [
             'user-payment_rejected' => 'Payment rejected',
             'user-waiting_for_payment' => 'Waiting for payment',
             'user-wait_for_payment_processing' => 'Waiting for payment processing',
+            'auto_verified_by_sms' => 'Auto-verified via SMS',
         ],
         'labels' => [
             'gateway' => 'Card',
