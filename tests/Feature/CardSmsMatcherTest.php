@@ -11,6 +11,7 @@ use TelegramBotEssentials\Essence\Models\BotUser;
 use TelegramBotEssentials\Essence\Models\MessageMeta;
 use TelegramBotEssentials\Essence\Models\TelegramUser;
 use TelegramBotEssentials\GatewayCard\Models\ToCardAttempt;
+use TelegramBotEssentials\GatewayCard\Models\UnmatchedCardSms;
 use TelegramBotEssentials\GatewayCard\Services\CardSmsMatcher;
 use TelegramBotEssentials\Settings\Services\Settings;
 
@@ -162,6 +163,92 @@ it('does not match an attempt whose proof has not been submitted yet', function 
     $attempt = makePendingAttempt($bot, '365000', null);
 
     app(CardSmsMatcher::class)->handle($bot, bluBankSms('3650000'));
+
+    expect($attempt->fresh()->status)->toBeNull();
+});
+
+it('parks an unmatched SMS for later replay instead of losing it', function () {
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+
+    makePendingAttempt($bot, '365000', null);
+
+    app(CardSmsMatcher::class)->handle($bot, bluBankSms('3650000'));
+
+    $sms = UnmatchedCardSms::sole();
+    expect($sms->bot_id)->toBe($bot->id)
+        ->and((string) $sms->amount)->toBe('365000');
+});
+
+it('auto-accepts once proof is submitted after the SMS already arrived', function () {
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+
+    $attempt = makePendingAttempt($bot, '365000', null);
+
+    // The bank SMS beats the member back to the bot - handle() can't match
+    // anything yet (no attempt has proof), so it parks the SMS.
+    app(CardSmsMatcher::class)->handle($bot, bluBankSms('3650000'));
+    expect($attempt->fresh()->status)->toBeNull();
+
+    // The member now submits proof.
+    $attempt->received_at = now();
+    $attempt->save();
+
+    app(CardSmsMatcher::class)->matchPendingSms($attempt);
+
+    expect($attempt->fresh()->status)->toBe('succeed')
+        ->and((string) $attempt->fresh()->received_amount)->toBe('365000')
+        ->and(UnmatchedCardSms::count())->toBe(0);
+});
+
+it('does not replay-match an ambiguous set of parked SMS', function () {
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+
+    $attempt = makePendingAttempt($bot, '365000', null);
+
+    // Two unrelated deposits of the same amount arrive before proof exists.
+    app(CardSmsMatcher::class)->handle($bot, bluBankSms('3650000'));
+    app(CardSmsMatcher::class)->handle($bot, bluBankSms('3650000'));
+    expect(UnmatchedCardSms::count())->toBe(2);
+
+    $attempt->received_at = now();
+    $attempt->save();
+
+    app(CardSmsMatcher::class)->matchPendingSms($attempt);
+
+    expect($attempt->fresh()->status)->toBeNull()
+        ->and(UnmatchedCardSms::count())->toBe(2);
+});
+
+it('does not replay-match a parked SMS from a different bot', function () {
+    $botA = $this->makeBot();
+    $botB = $this->makeBot();
+    configureCardSettings($botA);
+    configureCardSettings($botB);
+
+    app(CardSmsMatcher::class)->handle($botB, bluBankSms('3650000'));
+
+    $attempt = makePendingAttempt($botA, '365000', now());
+    app(CardSmsMatcher::class)->matchPendingSms($attempt);
+
+    expect($attempt->fresh()->status)->toBeNull();
+});
+
+it('does not replay-match a parked SMS outside the matching window', function () {
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+
+    UnmatchedCardSms::create([
+        'bot_id' => $bot->id,
+        'amount' => '365000',
+        'raw_text' => bluBankSms('3650000'),
+        'received_at' => now()->subMinutes(31),
+    ]);
+
+    $attempt = makePendingAttempt($bot, '365000', now());
+    app(CardSmsMatcher::class)->matchPendingSms($attempt);
 
     expect($attempt->fresh()->status)->toBeNull();
 });
