@@ -13,6 +13,7 @@ use TelegramBotEssentials\Essence\Enums\Roles;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
 use TelegramBotEssentials\Essence\Telegram\StateAnswers\StateAnswer;
 use TelegramBotEssentials\GatewayCard\Models\ToCardAttempt;
+use TelegramBotEssentials\GatewayCard\Services\CardSmsMatcher;
 use TelegramBotEssentials\GatewayCard\Telegram\Features\Member\CardPaymentFeature;
 
 class CardPaymentAnswer extends StateAnswer
@@ -99,6 +100,11 @@ class CardPaymentAnswer extends StateAnswer
 
         $invoice->paymentAttempt->messageMeta
             ->initializeModel(settings()->get('billing.gateways.card.transactions_chat_id'), $message->messageId, $message->text, $message->replyMarkup);
+
+        // The bank SMS commonly beats the member back to the bot with their
+        // proof - check whether it already arrived and was parked by
+        // CardSmsMatcher::handle(), now that this attempt has proof too.
+        app(CardSmsMatcher::class)->matchPendingSms($invoice->paymentAttempt);
     }
 
     /**
