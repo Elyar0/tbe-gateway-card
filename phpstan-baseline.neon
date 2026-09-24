@@ -73,7 +73,19 @@ parameters:
 			path: src/Models/ToCardAttempt.php
 
 		-
+			message: '#^Method TelegramBotEssentials\\GatewayCard\\Models\\UnmatchedCardSms\:\:prunable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Models/UnmatchedCardSms.php
+
+		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$amount\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Services/CardSmsMatcher.php
@@ -81,6 +93,12 @@ parameters:
 		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$received_amount\.$#'
 			identifier: property.notFound
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot access property \$amount on TelegramBotEssentials\\GatewayCard\\Models\\UnmatchedCardSms\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: src/Services/CardSmsMatcher.php
 
@@ -99,12 +117,18 @@ parameters:
 		-
 			message: '#^Cannot access property \$bot_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
-			count: 1
+			count: 2
 			path: src/Services/CardSmsMatcher.php
 
 		-
 			message: '#^Cannot access property \$bot_user_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
 			identifier: property.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot call method delete\(\) on TelegramBotEssentials\\GatewayCard\\Models\\UnmatchedCardSms\|null\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: src/Services/CardSmsMatcher.php
 
@@ -128,6 +152,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \#2 \$amount of method TelegramBotEssentials\\GatewayCard\\Services\\CardSmsMatcher\:\:autoAccept\(\) expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Services/CardSmsMatcher.php
@@ -470,6 +500,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$name of static method Illuminate\\Filesystem\\FilesystemManager\:\:disk\(\) expects string\|UnitEnum\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
+
+		-
+			message: '#^Parameter \#1 \$toCardAttempt of method TelegramBotEssentials\\GatewayCard\\Services\\CardSmsMatcher\:\:matchPendingSms\(\) expects TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/StateAnswers/Member/CardPaymentAnswer.php
