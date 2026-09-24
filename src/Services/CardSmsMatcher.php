@@ -128,12 +128,24 @@ class CardSmsMatcher
         // runForUser()'s own user-restore step) needs a fully-populated,
         // user-bound webhook context, not just an api() client. This is the
         // same apply() a queued job uses to resume a captured context.
-        (new WebhookContext(
-            botId: $invoice->bot_id,
-            botUserId: $invoice->bot_user_id,
-            bot: $invoice->bot,
-            botUser: $invoice->botUser,
-        ))->apply();
+        //
+        // Only when one isn't already live for this exact user: apply()
+        // calls wHook()->clear() first, which - when matchPendingSms()
+        // calls this from inside the member's own live update (their proof
+        // submission) rather than from the context-less SMS webhook - wipes
+        // the real Update and (via a fresh, already-cleared read of
+        // $invoice->botUser) the request's requestState out from under the
+        // caller still running above it.
+        $alreadyInContext = wHook()->check() && wHook()->user()->getKey() === $invoice->bot_user_id;
+
+        if (! $alreadyInContext) {
+            (new WebhookContext(
+                botId: $invoice->bot_id,
+                botUserId: $invoice->bot_user_id,
+                bot: $invoice->bot,
+                botUser: $invoice->botUser,
+            ))->apply();
+        }
 
         $toCardAttempt->received_amount = $amount;
         $toCardAttempt->save();
