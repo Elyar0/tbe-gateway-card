@@ -6,6 +6,15 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.9] - 2026-09-24
+
+### Fixed
+
+- SMS auto-verify crashed with "Undefined constant
+  `Brick\Math\RoundingMode::DOWN`" on every incoming deposit SMS for
+  IRT tenants - `brick/math` 0.12 replaced that constant with a native
+  enum. Pinned to the enum-era range so this can't regress.
+
 ## [0.1.8] - 2026-09-24
 
 ### Added
