@@ -6,6 +6,21 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-09-24
+
+### Added
+
+- Auto-verify to-card payments from forwarded bank deposit SMS: a per-bot
+  webhook (HMAC-signed, Blu Bank format to start) parses deposit
+  notifications and auto-accepts the single pending attempt whose amount
+  matches within a 30-minute window; an unmatched or ambiguous SMS falls
+  back to the admin transactions chat for manual review.
+- "Unique Payment Amounts" setting: adds a small random amount to each
+  to-card invoice, retried against amounts already used by other pending
+  attempts on the same bot, so concurrent payments of the same price can
+  always be told apart automatically instead of colliding into manual
+  review.
+
 ## [0.1.7] - 2026-09-22
 
 ### Changed
