@@ -25,6 +25,30 @@ parameters:
 			path: database/migrations/2026_07_27_000000_replace_info_photo_with_info_photo_path_on_to_card_attempts_table.php
 
 		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: src/Http/Controllers/CardSmsWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\Essence\\Support\\Webhook\:\:setBot\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/CardSmsWebhookController.php
+
+		-
+			message: '#^Parameter \#1 \$bot of method TelegramBotEssentials\\GatewayCard\\Services\\CardSmsMatcher\:\:handle\(\) expects TelegramBotEssentials\\Essence\\Models\\Bot, Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/CardSmsWebhookController.php
+
+		-
+			message: '#^Parameter \#3 \$key of function hash_hmac expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Http/Controllers/CardSmsWebhookController.php
+
+		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$info_photo_path\.$#'
 			identifier: property.notFound
 			count: 1
@@ -47,6 +71,96 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Models/ToCardAttempt.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Essence\\Models\\Bot\:\:\$bot_token\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$received_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot access property \$bot on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot access property \$botUser on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot access property \$bot_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot access property \$bot_user_id on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Cannot call method lockAction\(\) on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$bank of static method TelegramBotEssentials\\GatewayCard\\Services\\SmsParsers\\BankSmsParserFactory\:\:make\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$toCardAttempt of method TelegramBotEssentials\\GatewayCard\\Services\\CardSmsMatcher\:\:autoAccept\(\) expects TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt, TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$token of function telegramApi expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \$bot of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects TelegramBotEssentials\\Essence\\Models\\Bot\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \$botId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \$botUser of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects TelegramBotEssentials\\Essence\\Models\\BotUser\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \$botUserId of class TelegramBotEssentials\\Essence\\Support\\WebhookContext constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Services/CardSmsMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of static method Illuminate\\Routing\\RouteRegistrar\:\:prefix\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/TbeGatewayCardServiceProvider.php
 
 		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\GatewayCard\\Models\\ToCardAttempt\:\:\$amount\.$#'
@@ -85,6 +199,12 @@ parameters:
 			path: src/Telegram/CallbackQueries/Admin/ManageCardPaymentQuery.php
 
 		-
+			message: '#^Access to an undefined property TelegramBotEssentials\\Billing\\Models\\Invoice\:\:\$bot_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
+
+		-
 			message: '#^Access to an undefined property TelegramBotEssentials\\Billing\\Models\\Invoice\:\:\$price\.$#'
 			identifier: property.notFound
 			count: 1
@@ -109,13 +229,25 @@ parameters:
 			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
 
 		-
+			message: '#^Parameter \#1 \$amount of method TelegramBotEssentials\\Billing\\Services\\Currency\:\:priceFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
+
+		-
 			message: '#^Parameter \#1 \$condition of function dependsOn expects bool\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 4
 			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
 
 		-
-			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{cardNumber\: mixed, cardName\: mixed\} given\.$#'
+			message: '#^Parameter \#1 \$price of method TelegramBotEssentials\\GatewayCard\\Telegram\\CallbackQueries\\Member\\CardPaymentQuery\:\:uniqueAmount\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{amount\: string, cardNumber\: mixed, cardName\: mixed\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Telegram/CallbackQueries/Member/CardPaymentQuery.php
