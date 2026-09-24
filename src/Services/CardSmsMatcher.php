@@ -7,15 +7,20 @@ use Brick\Math\RoundingMode;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Support\WebhookContext;
 use TelegramBotEssentials\GatewayCard\Models\ToCardAttempt;
+use TelegramBotEssentials\GatewayCard\Models\UnmatchedCardSms;
 use TelegramBotEssentials\GatewayCard\Services\SmsParsers\BankSmsParserFactory;
 
 class CardSmsMatcher
 {
     /**
-     * Matching window: how long after the member submits proof a bank SMS
-     * is still eligible to auto-confirm that specific attempt.
+     * Matching window: how long a bank SMS and the pending attempt it pays
+     * for are still eligible to auto-confirm each other, counted from
+     * whichever of the two happens second (the member's proof submission,
+     * or - via UnmatchedCardSms - the SMS itself, since either can arrive
+     * first). Also UnmatchedCardSms's own retention window: see
+     * UnmatchedCardSms::prunable().
      */
-    private const MATCH_WINDOW_MINUTES = 30;
+    public const MATCH_WINDOW_MINUTES = 30;
 
     public function handle(Bot $bot, string $rawText): void
     {
@@ -75,7 +80,43 @@ class CardSmsMatcher
             return;
         }
 
+        if ($candidates->count() === 0) {
+            // No pending attempt has proof yet - the bank SMS commonly beats
+            // the member back to the bot. Keep it around so
+            // matchPendingSms() can catch it once they do submit proof,
+            // instead of losing the match entirely.
+            UnmatchedCardSms::create([
+                'bot_id' => $bot->id,
+                'amount' => $amount,
+                'raw_text' => $rawText,
+                'received_at' => now(),
+            ]);
+        }
+
         $this->reportUnmatched($amount, $candidates->count());
+    }
+
+    /**
+     * Called once a member submits proof for a card payment (their attempt's
+     * received_at is set), in case the matching bank SMS already arrived and
+     * was parked by handle() above. Mirrors handle()'s own single-candidate
+     * rule: an ambiguous match (more than one unmatched SMS at this amount)
+     * is left alone rather than guessed at, same as an ambiguous live SMS is.
+     */
+    public function matchPendingSms(ToCardAttempt $toCardAttempt): void
+    {
+        $candidates = UnmatchedCardSms::where('amount', $toCardAttempt->amount)
+            ->where('received_at', '>=', now()->subMinutes(self::MATCH_WINDOW_MINUTES))
+            ->where('bot_id', $toCardAttempt->invoice->bot_id)
+            ->get();
+
+        if ($candidates->count() !== 1) {
+            return;
+        }
+
+        $sms = $candidates->first();
+        $this->autoAccept($toCardAttempt, $sms->amount);
+        $sms->delete();
     }
 
     private function autoAccept(ToCardAttempt $toCardAttempt, string $amount): void
