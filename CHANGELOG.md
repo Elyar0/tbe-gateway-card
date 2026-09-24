@@ -6,6 +6,16 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-09-24
+
+### Fixed
+
+- Raised the `brick/math` floor to `0.14.2`: 0.1.9's fix used
+  `RoundingMode::Down`, but that pascal-case name only exists from
+  `0.14.2` onward (0.12.0-0.14.1 only had the upper-snake `DOWN`,
+  removed entirely in 0.15) - a `--prefer-lowest` install could still
+  resolve into the crash 0.1.9 meant to fix.
+
 ## [0.1.9] - 2026-09-24
 
 ### Fixed
