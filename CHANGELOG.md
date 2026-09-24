@@ -6,6 +6,16 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.11] - 2026-09-24
+
+### Fixed
+
+- SMS auto-verify only ever matched a pending card payment that already
+  had proof submitted, so a bank deposit SMS arriving first - commonly
+  faster than the member switching back to the bot - matched nothing
+  and was gone for good. Unmatched SMS are now parked and replayed
+  once proof lands, instead of only being logged.
+
 ## [0.1.10] - 2026-09-24
 
 ### Fixed
