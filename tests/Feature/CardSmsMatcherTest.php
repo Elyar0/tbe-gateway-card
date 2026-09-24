@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Carbon\Carbon;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Http;
+use Telegram\Bot\Objects\Update;
 use TelegramBotEssentials\Billing\Models\Invoice;
 use TelegramBotEssentials\Essence\Models\Bot;
 use TelegramBotEssentials\Essence\Models\BotUser;
@@ -200,6 +201,39 @@ it('auto-accepts once proof is submitted after the SMS already arrived', functio
     expect($attempt->fresh()->status)->toBe('succeed')
         ->and((string) $attempt->fresh()->received_amount)->toBe('365000')
         ->and(UnmatchedCardSms::count())->toBe(0);
+});
+
+it('does not clobber the caller\'s own webhook context when replay-matching', function () {
+    // Regression: matchPendingSms() is called from inside the member's own
+    // live update (proof submission) - autoAccept() must not blindly
+    // reapply a WebhookContext there. Doing so calls wHook()->clear() then
+    // reimports from $invoice->botUser, which - since payToCard() already
+    // persisted state back to null before calling this - wipes both the
+    // real incoming Update (replaced with an empty one) and requestState()
+    // (the snapshot TelegramWebhookController fires BotStateAnswerHandled
+    // with) out from under the request still running above this call.
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+
+    $attempt = makePendingAttempt($bot, '365000', now());
+
+    UnmatchedCardSms::create([
+        'bot_id' => $bot->id,
+        'amount' => '365000',
+        'raw_text' => bluBankSms('3650000'),
+        'received_at' => now(),
+    ]);
+
+    $liveUpdate = new Update(['update_id' => 999999, 'message' => ['message_id' => 1, 'text' => 'proof']]);
+    wHook()->setBot($bot);
+    wHook()->setUser($attempt->invoice->botUser);
+    wHook()->setApi(telegramApi($bot->bot_token));
+    wHook()->setUpdate($liveUpdate);
+
+    app(CardSmsMatcher::class)->matchPendingSms($attempt);
+
+    expect($attempt->fresh()->status)->toBe('succeed')
+        ->and(wHook()->update()->toArray())->toBe($liveUpdate->toArray());
 });
 
 it('does not replay-match an ambiguous set of parked SMS', function () {
