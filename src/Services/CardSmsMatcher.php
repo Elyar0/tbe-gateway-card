@@ -146,7 +146,7 @@ class CardSmsMatcher
 
         return match ($currency) {
             'IRR' => $rialAmount,
-            'IRT' => (string) BigDecimal::of($rialAmount)->dividedBy(10, 0, RoundingMode::DOWN),
+            'IRT' => (string) BigDecimal::of($rialAmount)->dividedBy(10, 0, RoundingMode::Down),
             default => null,
         };
     }
