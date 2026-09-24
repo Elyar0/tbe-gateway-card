@@ -6,6 +6,18 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.12] - 2026-09-24
+
+### Fixed
+
+- 0.1.11's replay match crashed the member's own request right after
+  they submitted payment proof (`BotStateAnswerHandled(): Argument #2
+  ($state) must be of type string, null given`). `autoAccept()`
+  unconditionally reapplied a `WebhookContext`, clearing and rebuilding
+  the live request's context out from under it - including replacing
+  the real incoming Telegram update with an empty one. Now only
+  applied when not already running inside that exact context.
+
 ## [0.1.11] - 2026-09-24
 
 ### Fixed
