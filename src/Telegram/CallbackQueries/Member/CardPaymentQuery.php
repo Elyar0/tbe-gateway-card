@@ -35,7 +35,7 @@ class CardPaymentQuery extends CallbackQuery
 
         $price = $invoice->price;
         $amount = settings()->get('billing.gateways.card.unique_amount')
-            ? (string) BigDecimal::of($price)->plus(random_int(1, 99))
+            ? $this->uniqueAmount($price, $invoice)
             : $price;
 
         $toCardAttempt = ToCardAttempt::create([
@@ -85,5 +85,31 @@ class CardPaymentQuery extends CallbackQuery
     public function isEnabled(): bool
     {
         return CardPaymentFeature::isCardPaymentEnabled();
+    }
+
+    /**
+     * A plain random offset can still collide between two attempts on the
+     * same bot that are both pending at once, which defeats the point of
+     * this setting - the SMS matcher would see two candidates at the same
+     * amount and fall back to manual review instead of auto-verifying
+     * either one. Retry against amounts already in use by other pending
+     * attempts before accepting one.
+     */
+    private function uniqueAmount(string $price, Invoice $invoice): string
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $amount = (string) BigDecimal::of($price)->plus(random_int(1, 99));
+
+            $taken = ToCardAttempt::whereNull('status')
+                ->where('amount', $amount)
+                ->whereHas('invoice', fn ($query) => $query->where('bot_id', $invoice->bot_id))
+                ->exists();
+
+            if (! $taken) {
+                break;
+            }
+        }
+
+        return $amount;
     }
 }
