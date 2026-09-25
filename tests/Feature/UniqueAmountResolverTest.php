@@ -62,6 +62,15 @@ it('skips offsets already taken and drops to a finer step once the coarse one is
     expect(app(UniqueAmountResolver::class)->resolve('365000'))->toBe('500');
 });
 
+it('ignores an attempt that already succeeded', function () {
+    $bot = $this->makeBot();
+    configureCardSettings($bot);
+    setUniqueAmountMode('soft');
+    makePendingAttempt($bot, '365000', now())->forceFill(['status' => 'succeed'])->save();
+
+    expect(app(UniqueAmountResolver::class)->resolve('365000'))->toBeNull();
+});
+
 it('ignores pending attempts that belong to a different tenant', function () {
     $bot = $this->makeBot();
     $otherBot = $this->makeBot();
