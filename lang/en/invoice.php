@@ -19,9 +19,11 @@ return [
             'user-payment_result' => 'Payment submitted successfully, wait for processing',
             'user-pay_message' => 'Pay the amount to this card then send the result here for processing'
                 ."\r\n"
-                ."\r\n💲 Amount: <code>:amount</code>"
+                ."\r\n💲 Amount: :amount"
                 ."\r\n🔸 <code>:cardNumber</code>"
-                ."\r\n :cardName",
+                ."\r\n👤 :cardName",
+            'unique_amount_notice' => '⚠️ Please carefully check both the amount and the target card, and pay this exact amount to get instantly verified.',
+            'unique_amount_wallet_notice' => 'The extra <code>:extraAmount</code> will be added directly to your wallet balance.',
             'user-payment_rejected' => '❌ Your payment rejected due to reason below:'
                 ."\r\n:rejectionReason",
             'admin-sms_unmatched' => '⚠️ Received a bank SMS for :amount, but it matched :candidateCount pending card payment(s) instead of exactly one. Left for manual review.',
