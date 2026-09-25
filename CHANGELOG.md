@@ -6,6 +6,15 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.14] - 2026-09-25
+
+### Changed
+
+- The "check the amount and the card, and pay this exact amount"
+  warning now shows on every card payment. Only the wallet-credit
+  sentence stays conditional (an extra amount was added and the wallet
+  is available).
+
 ## [0.1.13] - 2026-09-25
 
 ### Added
