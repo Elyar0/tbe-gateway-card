@@ -30,6 +30,11 @@ class CardPaymentAnswer extends StateAnswer
     public function cancel(): void
     {
         $invoice = Invoice::findOrFail($this->params['invoice']);
+
+        if ($invoice->paymentAttempt instanceof ToCardAttempt) {
+            $invoice->paymentAttempt->close(ToCardAttempt::STATUS_CANCELLED);
+        }
+
         $invoice->messageMeta->continueAction();
     }
 
