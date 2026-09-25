@@ -26,6 +26,9 @@
         }
     ],
     "minimum-stability": "stable",
+    "suggest": {
+        "telegram-bot-essentials/user-wallet": "Credits leftover unique-payment amounts to the member's wallet instead of absorbing them."
+    },
     "extra": {
         "laravel": {
             "providers": [
