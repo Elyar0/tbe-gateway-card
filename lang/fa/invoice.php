@@ -19,9 +19,11 @@ return [
             'user-payment_result' => '✅ پرداخت با موفقیت ثبت شد، منتظر پردازش بمانید',
             'user-pay_message' => 'مبلغ را به کارت زیر واریز کرده و نتیجه را ارسال کنید:'
                 ."\r\n"
-                ."\r\n💲 مبلغ: <code>:amount</code>"
+                ."\r\n💲 مبلغ: :amount"
                 ."\r\n🔸 <code>:cardNumber</code>"
-                ."\r\n :cardName",
+                ."\r\n👤 :cardName",
+            'unique_amount_notice' => '⚠️ لطفاً هم مبلغ و هم کارت مقصد را با دقت بررسی کنید و دقیقاً همین مبلغ را واریز کنید تا پرداخت شما بلافاصله تایید شود.',
+            'unique_amount_wallet_notice' => 'مبلغ اضافه‌ی <code>:extraAmount</code> مستقیماً به کیف پول شما اضافه خواهد شد.',
             'user-payment_rejected' => '❌ پرداخت شما به دلیل زیر رد شد:'
                 ."\r\n:rejectionReason",
             'admin-sms_unmatched' => '⚠️ یک پیامک بانکی به مبلغ :amount دریافت شد، اما با :candidateCount پرداخت کارتی در انتظار مطابقت داشت (نه دقیقاً یکی). برای بررسی دستی باقی ماند.',
