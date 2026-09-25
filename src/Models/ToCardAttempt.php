@@ -81,15 +81,22 @@ class ToCardAttempt extends PaymentAttempt
             return;
         }
 
-        $originalContext = WebhookContext::capture();
+        // apply() clears the live context first, which would wipe the real
+        // Update and request state out from under a caller that is already
+        // running as this member (their own proof submission), so only
+        // switch when the ambient user is someone else - the admin.
+        $switchContext = ! (wHook()->check() && wHook()->user()->getKey() === $this->invoice->bot_user_id);
+        $originalContext = $switchContext ? WebhookContext::capture() : null;
 
         try {
-            (new WebhookContext(
-                botId: $this->invoice->bot_id,
-                botUserId: $this->invoice->bot_user_id,
-                bot: $this->invoice->bot,
-                botUser: $this->invoice->botUser,
-            ))->apply();
+            if ($switchContext) {
+                (new WebhookContext(
+                    botId: $this->invoice->bot_id,
+                    botUserId: $this->invoice->bot_user_id,
+                    bot: $this->invoice->bot,
+                    botUser: $this->invoice->botUser,
+                ))->apply();
+            }
 
             wallet()->addAmount((string) $extra);
         } catch (\Throwable $e) {
