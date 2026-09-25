@@ -6,6 +6,40 @@ stabilizes at 1.0 a `0.x` bump may carry breaking changes.
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-09-25
+
+### Added
+
+- `billing.gateways.card.unique_amount` is now a three-way setting:
+  `hard` always adds a unique amount, `soft` (the default) only when
+  another pending card payment already sits at that amount, `disabled`
+  never does. A previously stored checkbox value is read as `hard` (on)
+  or `disabled` (off).
+- The unique amount is now picked from a coarse-to-fine ladder
+  (1000, 500, 300, 200, 100, up to 5000) that no other pending payment
+  on the bot uses, instead of a random 1-99. The old random offset only
+  remains as a last resort when the whole ladder is taken.
+- When `telegram-bot-essentials/user-wallet` is installed and enabled,
+  the extra amount is credited to the member's wallet once the payment
+  is confirmed (both auto-verify and manual admin accept). The wallet is
+  optional (`suggest`); without it the extra amount is simply absorbed.
+- The pay message warns to check the amount and the card and pay the
+  exact amount, and mentions the wallet credit when one will happen.
+
+### Changed
+
+- The amount in the pay message keeps its thousands separators, with
+  only the number inside the copyable `<code>` span.
+- Card attempts are now closed explicitly (`cancelled` when the member
+  backs out or the invoice is settled another way, `superseded` when a
+  new attempt replaces it), so old attempts stop counting as pending
+  payments. A migration backfills existing stale rows.
+
+### Removed
+
+- The random-retry `uniqueAmount()` helper, replaced by
+  `UniqueAmountResolver`.
+
 ## [0.1.12] - 2026-09-24
 
 ### Fixed
