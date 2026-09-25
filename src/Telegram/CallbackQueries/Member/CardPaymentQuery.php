@@ -64,14 +64,12 @@ class CardPaymentQuery extends CallbackQuery
             'cardName' => settings()->get('billing.gateways.card.card_name'),
         ]);
 
-        if ($offset !== null) {
-            $text .= "\r\n\r\n".__('tbe-gateway-card::invoice.to_card.text.unique_amount_notice');
+        $text .= "\r\n\r\n".__('tbe-gateway-card::invoice.to_card.text.unique_amount_notice');
 
-            if ($resolver->canCreditWallet()) {
-                $text .= ' '.__('tbe-gateway-card::invoice.to_card.text.unique_amount_wallet_notice', [
-                    'extraAmount' => currency()->priceFormat($offset),
-                ]);
-            }
+        if ($offset !== null && $resolver->canCreditWallet()) {
+            $text .= ' '.__('tbe-gateway-card::invoice.to_card.text.unique_amount_wallet_notice', [
+                'extraAmount' => currency()->priceFormat($offset),
+            ]);
         }
 
         if ($offerSummary = InvoiceFeature::offerSummary($invoice)) {
