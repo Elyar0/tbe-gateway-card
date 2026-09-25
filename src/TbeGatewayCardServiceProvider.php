@@ -3,12 +3,16 @@
 namespace TelegramBotEssentials\GatewayCard;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Telegram\Bot\Keyboard\Keyboard;
 use TelegramBotEssentials\Billing\DTOs\Gateway;
+use TelegramBotEssentials\Billing\Events\InvoiceFailed;
+use TelegramBotEssentials\Billing\Events\InvoicePaid;
 use TelegramBotEssentials\Billing\Models\Invoice;
 use TelegramBotEssentials\Essence\Exceptions\LogicException;
+use TelegramBotEssentials\GatewayCard\Listeners\CloseCardAttemptOnInvoiceSettled;
 use TelegramBotEssentials\GatewayCard\Services\SmsParsers\BankSmsParserFactory;
 use TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Admin\ManageCardPaymentQuery;
 use TelegramBotEssentials\GatewayCard\Telegram\CallbackQueries\Member\CardPaymentQuery;
@@ -50,6 +54,8 @@ class TbeGatewayCardServiceProvider extends ServiceProvider
             ManageCardPaymentAnswer::class,
             CardPaymentAnswer::class,
         ]);
+
+        Event::listen([InvoicePaid::class, InvoiceFailed::class], CloseCardAttemptOnInvoiceSettled::class);
 
         $this->addSettings();
         $this->registerToBilling();
@@ -144,8 +150,13 @@ class TbeGatewayCardServiceProvider extends ServiceProvider
         settings()->addSetting(new Setting(
             key: 'billing.gateways.card.unique_amount',
             label: fn () => __('tbe-gateway-card::settings.labels.unique_amount'),
-            type: SettingType::CHECKBOX,
-            default: false,
+            type: SettingType::SELECT,
+            default: 'soft',
+            options: fn () => [
+                'hard' => __('tbe-gateway-card::settings.options.unique_amount.hard'),
+                'soft' => __('tbe-gateway-card::settings.options.unique_amount.soft'),
+                'disabled' => __('tbe-gateway-card::settings.options.unique_amount.disabled'),
+            ],
             description: fn () => __('tbe-gateway-card::settings.descriptions.unique_amount'),
         ));
     }
